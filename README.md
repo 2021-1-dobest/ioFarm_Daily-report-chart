@@ -11,3 +11,8 @@
 - [react-router](https://reactrouter.com/)
 - [nivo](https://nivo.rocks/)
 - [Material-UI](https://material-ui.com/)
+
+## 프로젝트 참조
+- [요구사항](https://docs.google.com/presentation/d/1eaD0SykLHlZnXsJqQyfLzhRuGarLMWt8KSSMKE5FDSQ/edit#slide=id.gc961423692_0_12)
+- [자료구조](https://docs.google.com/spreadsheets/d/1wEINYfy8VzkvmH9d8Bo28ARcQ-R1mf30YlhEpQdNRZc/edit?usp=sharing)
+- [예시화면](https://www.figma.com/file/e7eLZAHYy4zRuBCQy4B2Vg/ioCrops?node-id=167%3A5)
