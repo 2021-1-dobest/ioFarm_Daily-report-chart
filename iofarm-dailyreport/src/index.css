@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* noto-sans-kr-regular - latin */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./res/fonts/Noto_Sans_KR/noto-sans-kr-v13-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+    url('./res/fonts/Noto_Sans_KR/noto-sans-kr-v13-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('./res/fonts/Noto_Sans_KR/noto-sans-kr-v13-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('./res/fonts/Noto_Sans_KR/noto-sans-kr-v13-latin-regular.woff') format('woff'), /* Modern Browsers */
+    /*이유는 잘 모르겠지만 해당 폰트가 존재하지 않음*/
+    /*url('./res/fonts/Noto_Sans_KR/noto-sans-kr-v13-latin-regular.ttf') format('truetype'), !* Safari, Android, iOS *!*/
+    url('./res/fonts/Noto_Sans_KR/noto-sans-kr-v13-latin-regular.svg#NotoSansKR') format('svg'); /* Legacy iOS */
+}

@@ -1,0 +1,74 @@
+{
+  "chart": {
+    "labels": {
+      "blue": {
+        "900": "#0D47A1",
+        "700": "#1976D2",
+        "500": "#2196F3",
+        "300": "#64B5F6",
+        "100": "#BBDEFB"
+      },
+      "green": {
+        "900": "#1B5E20",
+        "700": "#388E3C",
+        "500": "#4CAF50",
+        "300": "#81C784",
+        "100": "#C8E6C9"
+      },
+      "purple": {
+        "900": "#4A148C",
+        "700": "#7B1FA2",
+        "500": "#9C27B0",
+        "300": "#BA68C8",
+        "100": "#E1BEE7"
+      },
+      "pink": {
+        "900": "#880E4F",
+        "700": "#C2185B",
+        "500": "#E91E63",
+        "300": "#F06292",
+        "100": "#F8BBD0"
+      },
+      "amber": {
+        "900": "#FF6F00",
+        "700": "#FFA000",
+        "500": "#FFC107",
+        "300": "#FFD54F",
+        "100": "#FFECB3"
+      }
+    }
+  },
+  "mui": {
+    "common": {
+      "palette": {
+        "primary": {
+          "main": "#08C7BD",
+          "light": "#08C7BD",
+          "dark": "#08C7BD",
+          "contrastText": "#FFF"
+        }
+      },
+      "typography": {
+        "fontFamily": [
+          "Noto Sans KR",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol"
+        ]
+      }
+    },
+    "customs": {
+    }
+  },
+  "nav": {
+  },
+  "contents": {
+  }
+}

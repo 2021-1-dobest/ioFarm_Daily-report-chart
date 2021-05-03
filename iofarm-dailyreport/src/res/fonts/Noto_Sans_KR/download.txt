@@ -1,0 +1,2 @@
+https://google-webfonts-helper.herokuapp.com/fonts/noto-sans-kr?subsets=latin
+https://fonts.google.com/specimen/Noto+Sans+KR?subset=korean

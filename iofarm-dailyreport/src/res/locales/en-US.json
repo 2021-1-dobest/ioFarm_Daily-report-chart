@@ -1,0 +1,131 @@
+{
+  "config": {
+    "date": {
+      "locale" : "en-US",
+      "format" : "MMM do, yyyy"
+    }
+  },
+  "translation": {
+    "language": "English",
+    "workspace": {
+      "export": "내보내기",
+      "import": "불러오기"
+    },
+    "nav": {
+      "menus": {
+        "dark": "어두운 테마",
+        "language": "언어"
+      }
+    },
+    "contents": {
+      "title": "Daily Report chart",
+      "chart": {
+        "label": {
+          "blue": "파랑"
+        },
+        "fields": {
+          "Outside_weather": {
+            "Sun": {
+              "sunrise": "해(일출)",
+              "sunset": "해(일몰)"
+            },
+            "OutTemp": {
+              "avg": "온도(전체)",
+              "day_avg": "온도(오전)",
+              "night_avg": "온도(오후)",
+              "diff": "온도(차이)"
+            },
+            "OutRad_sum": {
+              "max": "흡수선량(최대)"
+            }
+          },
+          "Grh_temp": {
+            "RT_temp": {
+              "avg": "실시간 온도(평균)",
+              "day_avg": "실시간 온도(오전)",
+              "night_avg": "실시간 온도(오후)",
+              "diff": "실시간 온도(오차)",
+              "max": "실시간 온도(최고)",
+              "min": "실시간 온도(최저)"
+            }
+          },
+          "Grh_humidity": {
+            "RT_hum": {
+              "avg": "실시간 습도(평균)",
+              "day_avg": "실시간 습도(오전)",
+              "night_avg": "실시간 습도(오후)",
+              "max": "실시간 습도(최고)",
+              "min": "실시간 습도(최저)"
+            },
+            "GrhHdm": {
+              "avg": "습도(평균)",
+              "day_avg": "습도(오전)",
+              "night_avg": "습도(오후)",
+              "max": "습도(최고)",
+              "min": "습도(최저)"
+            }
+          },
+          "Grh_climate_etc": {
+            "GrhCo2": {
+              "avg": "이산화탄소(평균)",
+              "min": "이산화탄소(최고)",
+              "max": "이산화탄소(최저)"
+            }
+          },
+          "Slab": {
+            "RT_soil_EC": {
+              "avg": "토양 EC(평균)",
+              "max": "토양 EC(최고)",
+              "min": "토양 EC(최저)",
+              "diff": "토양 EC(오차)"
+            },
+            "RT_root_loadcell": {
+              "avg": "무게(평균)",
+              "diff": "무게(오차)"
+            },
+            "RT_soil_temp": {
+              "avg": "토양 온도(평균)"
+            }
+          }
+        },
+        "meta": {
+          "date": "날자",
+          "default-left-y": "기본 좌측 Y축",
+          "default-right-y": "기본 우측 Y축"
+        },
+        "toolbar": {
+          "edit": "항목 편집",
+          "import": "불러오기",
+          "export": "내보내기",
+          "add-chart": "차트 추가하기"
+        },
+        "config": {
+          "head": {
+            "y-axis": "Y축 설정",
+            "item": "항목 설정"
+          },
+          "item": {
+            "type": "유형",
+            "type-bar": "막대그래프",
+            "type-line": "꺾은선그래프",
+            "color": "색상",
+            "axis": "Y축",
+            "axis-left": "왼쪽 축",
+            "axis-right": "오른쪽 축",
+            "label": "데이터 라벨",
+            "label-show": "표시함",
+            "label-hidden": "표시 안함"
+          },
+          "axis": {
+            "left-y": "왼쪽 Y축",
+            "right-y": "오른쪽 Y축",
+            "name": "제목",
+            "min": "최소",
+            "max": "최대",
+            "support": "보조선"
+          }
+        }
+      }
+    }
+  }
+}
