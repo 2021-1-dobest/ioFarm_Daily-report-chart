@@ -2,6 +2,7 @@ import {createSelector, createSlice} from "@reduxjs/toolkit";
 import defaultTheme from '../res/theme.json'
 import {createMuiTheme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import jp from "jsonpath";
 
 //
 const ThemeManager = createSlice({
@@ -24,6 +25,12 @@ export const SelectDefaultTheme = createSelector(
         return state.theme.mui.common
     },
     (res) => createMuiTheme(res)
+)
+export const SelectChartLabels = createSelector(
+    state => {
+        return state.theme.chart.colors
+    },
+    (res) => jp.nodes(res, '$.*.*')
 )
 // Prebuilt - Themes
 export const MUIPlusButtons = makeStyles((theme) => (

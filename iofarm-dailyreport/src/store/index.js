@@ -2,6 +2,7 @@ import {combineReducers, configureStore, getDefaultMiddleware} from "@reduxjs/to
 
 import {theme} from "./ThemeManager";
 import {locale} from "./LocaleManager";
+import {chart} from "./ChartManager";
 import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE} from "redux-persist"
 import storage from "redux-persist/lib/storage"
 
@@ -9,7 +10,8 @@ import storage from "redux-persist/lib/storage"
 const rootReducer = combineReducers(
     {
         theme,
-        locale
+        locale,
+        chart
     }
 )
 

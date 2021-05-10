@@ -1,8 +1,8 @@
 {
   "config": {
     "date": {
-      "locale" : "ko",
-      "format" : "yyyy년 MMM do"
+      "locale": "ko",
+      "format": "yyyy년 MMM do"
     }
   },
   "translation": {
@@ -19,28 +19,42 @@
     },
     "contents": {
       "title": "일간 보고서 차트",
+      "buttons": {
+        "add-chart": "차트 추가하기",
+        "scroll-top": "맨 위로"
+      },
       "chart": {
-        "label": {
-          "blue": "파랑"
+        "colors": {
+          "blue": "파랑 {{variant}}",
+          "green": "초록 {{variant}}",
+          "purple": "보라 {{variant}}",
+          "pink": "분홍 {{variant}}",
+          "amber": "등색 {{variant}}"
         },
         "fields": {
           "Outside_weather": {
+            ".default": "외부 날씨",
             "Sun": {
+              ".default": "해",
               "sunrise": "해(일출)",
               "sunset": "해(일몰)"
             },
             "OutTemp": {
+              ".default": "외부 온도",
               "avg": "온도(전체)",
               "day_avg": "온도(오전)",
               "night_avg": "온도(오후)",
               "diff": "온도(차이)"
             },
             "OutRad_sum": {
+              ".default": "외부 흡수선량",
               "max": "흡수선량(최대)"
             }
           },
           "Grh_temp": {
+            ".default": "온실온도",
             "RT_temp": {
+              ".default": "실시간 온도",
               "avg": "실시간 온도(평균)",
               "day_avg": "실시간 온도(오전)",
               "night_avg": "실시간 온도(오후)",
@@ -50,7 +64,9 @@
             }
           },
           "Grh_humidity": {
+            ".default": "온실습도",
             "RT_hum": {
+              ".default": "실시간 습도",
               "avg": "실시간 습도(평균)",
               "day_avg": "실시간 습도(오전)",
               "night_avg": "실시간 습도(오후)",
@@ -58,6 +74,7 @@
               "min": "실시간 습도(최저)"
             },
             "GrhHdm": {
+              ".default": "습도",
               "avg": "습도(평균)",
               "day_avg": "습도(오전)",
               "night_avg": "습도(오후)",
@@ -66,24 +83,30 @@
             }
           },
           "Grh_climate_etc": {
+            ".default": "온실(그외)",
             "GrhCo2": {
+              ".default": "이산화탄소",
               "avg": "이산화탄소(평균)",
               "min": "이산화탄소(최고)",
               "max": "이산화탄소(최저)"
             }
           },
           "Slab": {
+            ".default": "Slab",
             "RT_soil_EC": {
+              ".default": "실시간 토양 EC",
               "avg": "토양 EC(평균)",
               "max": "토양 EC(최고)",
               "min": "토양 EC(최저)",
               "diff": "토양 EC(오차)"
             },
             "RT_root_loadcell": {
+              ".default": "실시간 뿌리 무게",
               "avg": "무게(평균)",
               "diff": "무게(오차)"
             },
             "RT_soil_temp": {
+              ".default": "실시간 토양 온도",
               "avg": "토양 온도(평균)"
             }
           }
@@ -95,9 +118,21 @@
         },
         "toolbar": {
           "edit": "항목 편집",
-          "import": "불러오기",
           "export": "내보내기",
-          "add-chart": "차트 추가하기"
+          "export-as": ".{{as}} 형식으로 내보내기",
+          "enlarge-hint": "확대하기",
+          "axes-config-hint": "축 설정",
+          "axes-filter-hint": "축 필터",
+          "zoom-in-hint": "확대",
+          "zoom-out-hint": "축소",
+          "delete-hint": "차트 삭제",
+          "filter-modal": {
+            "title": "필터 편집",
+            "selected": "{{selected}}개 선택됨",
+            "root-filter": "축 전체",
+            "reset": "처음 상태로",
+            "expand-all": "모두 펼치기"
+          }
         },
         "config": {
           "head": {
@@ -112,11 +147,14 @@
             "axis": "Y축",
             "axis-left": "왼쪽 축",
             "axis-right": "오른쪽 축",
-            "label": "데이터 라벨",
+            "label": "라벨",
             "label-show": "표시함",
-            "label-hidden": "표시 안함"
+            "label-hidden": "표시 안함",
+            "dot": "점",
+            "dot-show": "표시함",
+            "dot-hidden": "표시 안함"
           },
-          "axis": {
+          "y-axis": {
             "left-y": "왼쪽 Y축",
             "right-y": "오른쪽 Y축",
             "name": "제목",

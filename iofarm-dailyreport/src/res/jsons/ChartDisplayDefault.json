@@ -1,0 +1,25 @@
+{
+  ".undefined": {
+    "type": "line",
+    "color": null,
+    "y-axis": "left",
+    "label-show": true,
+    "dot-show": true
+  },
+  "Outside_weather": {
+    "Sun": {
+      "sunrise": {
+        "type": "bar",
+        "color": null,
+        "y-axis": "left",
+        "label-show": true
+      },
+      "sunset": {
+        "type": "bar",
+        "color": null,
+        "y-axis": "left",
+        "label-show": true
+      }
+    }
+  }
+}
