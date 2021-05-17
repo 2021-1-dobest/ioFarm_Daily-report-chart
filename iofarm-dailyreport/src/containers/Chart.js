@@ -11,7 +11,7 @@ import {
     Grid,
     Hidden,
     IconButton,
-    InputAdornment,
+    InputAdornment, ListItemIcon,
     Menu,
     MenuItem,
     Modal,
@@ -50,14 +50,16 @@ import {
     Filter9Plus,
     FilterNone,
     GetApp,
-    InsertChart,
+    InsertChart, PermDataSetting,
     Search,
-    SwapHoriz
+    SwapHoriz, Warning
 } from "@material-ui/icons";
 import ChartManager, {SelectChart, SelectFilterCount} from "../store/ChartManager";
-import {TabContext, TabList, TabPanel, TreeItem, TreeView} from "@material-ui/lab";
-import {parse} from "date-fns";
+import {TreeItem, TreeView} from "@material-ui/lab";
+import {format as dfmt, parse} from "date-fns";
 import FieldConfig from "./FieldConfig";
+import xlsx from "xlsx";
+import ChartView from "./ChartView";
 
 const useClasses = makeStyles((theme) => ({
     modalBase: {
@@ -163,7 +165,8 @@ const useClasses = makeStyles((theme) => ({
     },
     chartView: {
         paddingBlock: 0,
-        overflow: "hidden",
+        flexGrow : 1,
+        overflowX : 'auto',
         [theme.breakpoints.down('md')]: {
             paddingInline: theme.spacing(1)
         },
@@ -221,7 +224,35 @@ const filterCountedIcon = [
     <Filter9/>,
     <Filter9Plus/>,
 ]
+const download = (downloadName, blob) => {
+    const element = document.createElement('a')
+    element.href = blob;
+    element.download = downloadName;
+    element.click();
+}
 
+const chartDataToBook = (cd) => {
+    const dates = jp.nodes(cd.chart, '$.*').map(v => v.path[1])
+    const fields = jp.nodes(cd.chart, '$..*').filter(n => typeof n.value !== 'object').map(v => v.path.slice(2))
+    const allComb = fields.map(fds => dates.map(dt => [dt, ...fds]))
+    const wb = xlsx.utils.book_new()
+    wb.Props = {
+        Title: `${cd.title}`,
+        Author: "iofarm-dailyreport",
+        CreatedDate: new Date(),
+    }
+    wb.SheetNames.push('chart')
+    wb.Sheets['chart'] = xlsx.utils.aoa_to_sheet([
+        ['', ...Object.keys(cd.chart)],
+        ...allComb
+            .map(p =>
+                p.map(v =>
+                    jp.value(cd.chart, jp.stringify(v)) ?? null
+                )
+            ).map((v, i) => [fields[i].join('.'), ...v])
+    ])
+    return wb
+}
 export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
     //
     if (enlarge === undefined) {
@@ -251,16 +282,16 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
     const dispatch = useDispatch()
     const {t} = useTranslation()
     const classes = useClasses()
-    const [beginDate, setBeginDate] = useState(parse(chartData.range[0], chartData.config.dateFormat, new Date()));
-    const [endDate, setEndDate] = useState(parse(chartData.range[1], chartData.config.dateFormat, new Date()));
+    // const [beginDate, setBeginDate] = useState(parse(chartData.range[0], chartData.config.dateFormat, new Date()));
+    // const [endDate, setEndDate] = useState(parse(chartData.range[1], chartData.config.dateFormat, new Date()));
     const [zoomMenu, setZoomMenu] = useState(false);
     const [exportMenu, setExportMenu] = useState(false);
     const [zoom, setZoom] = useState(4);
     const [filterSearch, setFilterSearch] = useState("");
     const [filterExpand, setFilterExpand] = useState(defaultOpened);
-    const [isModalAxisFilter, setModalAxisFilter] = useState(false);
-    const [isModalAxisConfig, setModalAxisConfig] = useState(false);
-    const [modalConfigTab, setModalConfigTab] = useState('0');
+    const [isModalFieldFilter, setModalFieldFilter] = useState(false);
+    const [isModalFieldConfig, setModalFieldConfig] = useState(false);
+    const [isModalYAxisConfig, setModalYAxisConfig] = useState(false);
     const {module, format} = useSelector(SelectLocale)
     const scrollRef = useRef()
     const zoomRef = useRef()
@@ -274,10 +305,16 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
         }
     }
     const handleBeginDateChange = (date) => {
-        setBeginDate(date)
+        dispatch(ChartManager.actions.modifyChartRangeBegin({
+            id : reduxChartId,
+            date : dfmt(date, chartData.config.dateFormat),
+        }))
     }
     const handleEndDateChange = (date) => {
-        setEndDate(date)
+        dispatch(ChartManager.actions.modifyChartRangeEnd({
+            id : reduxChartId,
+            date : dfmt(date, chartData.config.dateFormat),
+        }))
     }
     const handleZoomChange = (ev, number) => {
         setZoom(number)
@@ -312,14 +349,13 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
         }
         return theme
     }
-
     const handleFilterOpen = () => {
-        setModalAxisFilter(true)
+        setModalFieldFilter(true)
         setFilterSearch("")
         setFilterExpand(defaultOpened)
     }
     const handleFilterClose = () => {
-        setModalAxisFilter(false)
+        setModalFieldFilter(false)
     }
     const handleFieldLineType = (elem, change) => {
         dispatch(ChartManager.actions.modifyChartDisplay({
@@ -360,6 +396,40 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
             path: `${elem.json}["dot-show"]`,
             value: change,
         }))
+    }
+    const handleExportJSON = () => {
+        const output = Object.assign(
+            {},
+            {
+                title: chartData.title,
+                dataset: chartData.chart,
+            }
+        )
+        const file = new Blob([JSON.stringify(output)], {type: 'application/json'})
+        download(`${chartData.title}.json`, URL.createObjectURL(file))
+    }
+    const handleExportCSV = () => {
+        const wb = chartDataToBook(chartData)
+        const title = `${wb.Props.Title}.csv`
+        xlsx.writeFile(wb, title, {
+            bookType: 'csv',
+        })
+        // download(title, f)
+    }
+    const handleExportXLS = () => {
+        const wb = chartDataToBook(chartData)
+        const title = `${wb.Props.Title}.xls`
+        xlsx.writeFile(wb, title, {
+            bookType: 'xls',
+        })
+        // download(title, f)
+    }
+    const handleExportXLSX = () => {
+        const wb = chartDataToBook(chartData)
+        const title = `${wb.Props.Title}.xlsx`
+        xlsx.writeFile(wb, title, {
+            bookType: 'xlsx',
+        })
     }
     // effect
     // render function
@@ -414,6 +484,7 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
             {childrenNodes}
         </TreeItem>
     }
+
     const selectedFields = jp.paths(chartData.filter, '$..*[?(@==true)]').map(v => ({
         json: jp.stringify(v),
         i18n: `contents.chart.fields.${v.slice(1).join('.')}`,
@@ -441,7 +512,7 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
                                             // disableToolbar
                                             className={classes.datePicker}
                                             format={format}
-                                            value={beginDate}
+                                            value={parse(chartData.range[0], chartData.config.dateFormat, new Date())}
                                             inputVariant="filled"
                                             onChange={handleBeginDateChange}
                                             style={{marginRight: '5px'}}
@@ -450,7 +521,7 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
                                         <DatePicker
                                             className={classes.datePicker}
                                             format={format}
-                                            value={endDate}
+                                            value={parse(chartData.range[1], chartData.config.dateFormat, new Date())}
                                             inputVariant="filled"
                                             onChange={handleEndDateChange}
                                         />
@@ -484,20 +555,42 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
                                         horizontal: 'right',
                                     }}
                                 >
-                                    <MenuItem>{t('contents.chart.toolbar.export-as', {'as': 'csv'})}</MenuItem>
-                                    <MenuItem>{t('contents.chart.toolbar.export-as', {'as': 'json'})}</MenuItem>
-                                    <MenuItem>{t('contents.chart.toolbar.export-as', {'as': 'xls'})}</MenuItem>
-                                    <MenuItem>{t('contents.chart.toolbar.export-as', {'as': 'xlsx'})}</MenuItem>
+                                    <MenuItem
+                                        onClick={handleExportCSV}>
+                                        <ListItemIcon>
+                                            <GetApp fontSize="small"/>
+                                        </ListItemIcon>
+                                        {t('contents.chart.toolbar.export-as', {'as': 'csv'})}
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={handleExportJSON}>
+                                        <ListItemIcon>
+                                            <GetApp fontSize="small"/>
+                                        </ListItemIcon>
+                                        {t('contents.chart.toolbar.export-as', {'as': 'json'})}
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={handleExportXLSX}>
+                                        <ListItemIcon>
+                                            <GetApp fontSize="small"/>
+                                        </ListItemIcon>
+                                        {t('contents.chart.toolbar.export-as', {'as': 'xlsx'})}
+                                    </MenuItem>
+                                    <Tooltip title={t('contents.chart.toolbar.export-not-recommended')}>
+                                        <MenuItem
+                                            color="error"
+                                            onClick={handleExportXLS}>
+                                            <ListItemIcon>
+                                                <Warning fontSize="small" color="error"/>
+                                            </ListItemIcon>
+                                            {t('contents.chart.toolbar.export-as', {'as': 'xls'})}
+                                        </MenuItem>
+                                    </Tooltip>
                                 </Menu>
                             </Box>
                         </CardContent>
                         <CardContent className={classes.chartView}>
-                            <Typography style={{
-                                backgroundColor: '#A0A000',
-                                height: '100%',
-                                whiteSpace: 'pre-wrap',
-                                overflowY: "scroll",
-                            }}>{JSON.stringify(chartData, undefined, '    ')}</Typography>
+                            <ChartView chartID={reduxChartId}/>
                         </CardContent>
                         <CardActions>
                             <Box flexGrow={1}/>
@@ -538,13 +631,16 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
                                     </Box>
                                 </Box>
                             </Menu>
-                            <Tooltip title={t('contents.chart.toolbar.axes-filter-hint')}>
+                            <Tooltip title={t('contents.chart.toolbar.fields-filter-hint')}>
                                 <IconButton onClick={handleFilterOpen}>
                                     {chartDataFilterCount >= filterCountedIcon.length ? filterCountedIcon[filterCountedIcon.length - 1] : filterCountedIcon[chartDataFilterCount]}
                                 </IconButton>
                             </Tooltip>
+                            <Tooltip title={t('contents.chart.toolbar.fields-config-hint')}>
+                                <IconButton onClick={() => setModalFieldConfig(true)}><PermDataSetting/></IconButton>
+                            </Tooltip>
                             <Tooltip title={t('contents.chart.toolbar.axes-config-hint')}>
-                                <IconButton onClick={() => setModalAxisConfig(true)}><InsertChart/></IconButton>
+                                <IconButton onClick={() => setModalFieldConfig(true)}><InsertChart/></IconButton>
                             </Tooltip>
                             <Hidden mdDown>
                                 <Tooltip title={t('contents.chart.toolbar.enlarge-hint')}>
@@ -560,7 +656,7 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
             </Grid>
             <Modal
                 className={classes.modalBase}
-                open={isModalAxisFilter} onClose={handleFilterClose}
+                open={isModalFieldFilter} onClose={handleFilterClose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
                 BackdropProps={{timeout: 500,}}>
@@ -633,7 +729,7 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
             </Modal>
             <Modal
                 className={classes.modalBase}
-                open={isModalAxisConfig} onClose={() => setModalAxisConfig(false)}
+                open={isModalFieldConfig} onClose={() => setModalFieldConfig(false)}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
                 BackdropProps={{timeout: 500,}}>
@@ -643,7 +739,8 @@ export default function ({enlarge, reduxChartId, onEnlarging, onDelete}) {
                             <Typography
                                 className={classes.modalCardTitle}>{t('contents.chart.config.head.item')}</Typography>
                             <Box flexGrow={1}/>
-                            <Box><IconButton size="small" onClick={() => setModalAxisConfig(false)}><Close/></IconButton></Box>
+                            <Box><IconButton size="small"
+                                             onClick={() => setModalFieldConfig(false)}><Close/></IconButton></Box>
                         </Box>
                     </CardContent>
                     <CardContent className={classes.modalConfigContents}>

@@ -21,7 +21,7 @@ const store = configureStore({
             key: "iofarm",
             version: 0,
             storage,
-            whitelist: ["theme"]
+            whitelist: ["theme", "chart"]
         },
         rootReducer
     ),

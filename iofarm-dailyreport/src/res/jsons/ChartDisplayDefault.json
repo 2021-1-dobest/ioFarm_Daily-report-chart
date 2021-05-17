@@ -1,24 +1,26 @@
 {
   ".undefined": {
-    "type": "line",
+    "type": "bar",
     "color": null,
     "y-axis": "left",
-    "label-show": true,
-    "dot-show": true
+    "label-show": false,
+    "dot-show": false
   },
   "Outside_weather": {
     "Sun": {
       "sunrise": {
-        "type": "bar",
+        "type": "line",
         "color": null,
-        "y-axis": "left",
-        "label-show": true
+        "y-axis": "right",
+        "label-show": false,
+        "dot-show": false
       },
       "sunset": {
-        "type": "bar",
+        "type": "line",
         "color": null,
-        "y-axis": "left",
-        "label-show": true
+        "y-axis": "right",
+        "label-show": false,
+        "dot-show": false
       }
     }
   }

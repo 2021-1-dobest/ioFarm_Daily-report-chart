@@ -1,12 +1,21 @@
 import {useTranslation} from "react-i18next";
-import {Box, Button, Container, Grid, IconButton, Typography} from "@material-ui/core";
+import {Box, Button, Container, Grid, IconButton, Input, Typography} from "@material-ui/core";
 import Chart from "../containers/Chart";
 import {makeStyles} from "@material-ui/core/styles";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {AddCircleOutline} from "@material-ui/icons";
-import ChartManager, {SelectChart} from "../store/ChartManager";
+import ChartManager, {SelectChart, SelectChartIDs} from "../store/ChartManager";
 import {useDispatch, useSelector} from "react-redux";
 import {SelectChartLabels} from "../store/ThemeManager";
+import jp from "jsonpath";
+
+const virtualFileInput = (accects) => {
+    const fileSelector = document.createElement('input')
+    fileSelector.setAttribute('type', 'file')
+    fileSelector.setAttribute('accept', accects.join(', '))
+    fileSelector.setAttribute('multiple', "")
+    return fileSelector
+}
 
 const useClasses = makeStyles((theme) => ({
     container: {
@@ -22,65 +31,53 @@ const useClasses = makeStyles((theme) => ({
 }))
 export default function () {
     //
+    const ids = useSelector(SelectChartIDs)
     const dispatch = useDispatch()
     const classes = useClasses()
     const {t} = useTranslation()
-    const [charts, setCharts] = useState([])
     const themeLabels = useSelector(SelectChartLabels)
+    // const ifileRef = useRef()
+    const fselect = virtualFileInput([
+        'application/json', // JSON
+        'text/csv', // CSV
+        'application/vnd.ms-excel', // XLX, MS-Excel
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // XLSX, MS-Excel
+    ])
     //
-    const handleAddChart = () => {
-        const res = dispatch(ChartManager.actions.createChart({
-            dataset: {
-                "2021-01-01 00:00:00": {
-                    "Outside_weather": {
-                        "Sun": {
-                            "sunrise": "07:47",
-                            "sunset": "17:24",
-                        }
-                    },
-                    "Grh_humidity": {
-                        "RT_hum": {
-                            "avg": 32,
-                            "day_avg": 33,
-                            "night_avg": 32,
-                            "max": 36,
-                            "min": 29,
-                        }
-                    }
-                },
-                "2021-01-02 00:00:00": {
-                    "Outside_weather": {
-                        "Sun": {
-                            "sunrise": "08:47",
-                            "sunset": "17:34",
-                        }
-                    },
-                    "Grh_temp": {
-                        "RT_temp": {
-                            "avg": 19.9,
-                            "day_avg": 21.4,
-                            "night_avg": 18.8,
-                            "diff": 2.5,
-                            "max": 24,
-                            "min": 17.7,
-                        }
-                    },
-                    "Grh_humidity": {
-                        "RT_hum": {
-                            "avg": 33,
-                            "day_avg": 34,
-                            "night_avg": 33,
-                            "max": 37,
-                            "min": 30,
-                        }
-                    }
-                }
-            },
-            colors: themeLabels.map(v => v.value)
-        }))
-        setCharts([...charts, res.return])
+    const handleAddChart = (e) => {
+        e.preventDefault()
+        fselect.click()
     }
-
+    const handleDeleteChart = (e, chartID) => {
+        dispatch(ChartManager.actions.deleteChart({id: chartID}))
+    }
+    //
+    fselect.onchange = async ev => {
+        for (const file of ev.target.files) {
+            switch (file.type) {
+                case 'application/json':
+                    const result = await new Promise((resolve, reject) => {
+                        const fr = new FileReader()
+                        fr.onload = () => {
+                            resolve(JSON.parse(fr.result))
+                        }
+                        fr.readAsText(file)
+                    })
+                    if (result.colors === undefined) {
+                        result.colors = themeLabels.map(v => v.value)
+                    }
+                    dispatch(ChartManager.actions.createChart(result))
+                    break
+                case 'text/csv':
+                    break
+                case 'application/vnd.ms-excel':
+                    break
+                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                    break
+            }
+        }
+    }
+    //
     return (
         <Box className={classes.containerWrapper} flexGrow={1}>
             <Container maxWidth="xl" className={classes.container}>
@@ -89,12 +86,12 @@ export default function () {
                         <Typography variant="h4" color="textPrimary">{t('contents.title')}</Typography>
                     </Grid>
                     {
-                        charts
+                        ids
                             .map((elem) =>
                                 <Chart
                                     key={elem}
                                     reduxChartId={elem}
-                                    onDelete={() => setCharts(charts.filter(v => v !== elem))}
+                                    onDelete={(ev) => handleDeleteChart(ev, elem)}
                                 />)
                     }
                     <Grid item xs={12}>
