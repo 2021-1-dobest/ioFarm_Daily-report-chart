@@ -233,8 +233,14 @@ const download = (downloadName, blob) => {
 
 const chartDataToBook = (cd) => {
     const dates = jp.nodes(cd.chart, '$.*').map(v => v.path[1])
-    const fields = jp.nodes(cd.chart, '$..*').filter(n => typeof n.value !== 'object').map(v => v.path.slice(2))
-    const allComb = fields.map(fds => dates.map(dt => [dt, ...fds]))
+    const fields = jp.nodes(cd.filter, '$..*').filter(n => typeof n.value !== 'object').map(v => v.path.slice(1))
+    const allComb = dates.map(dt => fields.map(fds => [dt, ...fds]))
+    console.log(allComb
+        .map(p =>
+            p.map(v =>
+                jp.value(cd.chart, jp.stringify(v)) ?? null
+            )
+        ))
     const wb = xlsx.utils.book_new()
     wb.Props = {
         Title: `${cd.title}`,
@@ -243,13 +249,14 @@ const chartDataToBook = (cd) => {
     }
     wb.SheetNames.push('chart')
     wb.Sheets['chart'] = xlsx.utils.aoa_to_sheet([
-        ['', ...Object.keys(cd.chart)],
+        ['', ...fields.map(value => value.join('.'))],
         ...allComb
             .map(p =>
                 p.map(v =>
                     jp.value(cd.chart, jp.stringify(v)) ?? null
                 )
-            ).map((v, i) => [fields[i].join('.'), ...v])
+            )
+            .map((v, i) => [dates[i], ...v])
     ])
     return wb
 }
