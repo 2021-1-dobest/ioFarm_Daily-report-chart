@@ -251,11 +251,9 @@ const chartDataToBook = (cd) => {
     wb.Sheets['chart'] = xlsx.utils.aoa_to_sheet([
         ['', ...fields.map(value => value.join('.'))],
         ...allComb
-            .map(p =>
-                p.map(v =>
-                    jp.value(cd.chart, jp.stringify(v)) ?? null
-                )
-            )
+            // 각 패스의 필요한 요소를 jsonpath로 불러옴
+            .map(p => p.map(v => jp.value(cd.chart, jp.stringify(v)) ?? null))
+            // 맨 앞에 열의 날자 부분 추가
             .map((v, i) => [dates[i], ...v])
     ])
     return wb
